@@ -7,7 +7,7 @@ from math import comb
 from statistics import mean, median
 
 
-CSV_PATH = "/Users/4c/Desktop/GHQ/data/loto7hh_4626_k44.csv"
+CSV_PATH = "/data/loto7hh_4626_k44.csv"
 N = 39
 K = 7
 RUNS = int(os.getenv("RUNS", "10000"))
@@ -177,16 +177,16 @@ p90: 7673
 max: 33534
 
 top 10 pogodjenih istorijskih kombinacija u simulaciji:
-count: 10 lex_1: 1764994 kombinacija: (1, 7, 12, 17, 18, 23, 39)
-count: 9 lex_1: 1254492 kombinacija: (1, 5, 9, 12, 19, 26, 28)
-count: 9 lex_1: 10621941 kombinacija: (6, 10, 20, 29, 30, 35, 39)
-count: 9 lex_1: 248778 kombinacija: (1, 2, 8, 13, 15, 17, 36)
-count: 8 lex_1: 6468686 kombinacija: (3, 10, 12, 17, 18, 20, 34)
-count: 8 lex_1: 396671 kombinacija: (1, 2, 16, 19, 22, 29, 32)
-count: 8 lex_1: 11410941 kombinacija: (7, 9, 21, 24, 25, 27, 37)
-count: 8 lex_1: 4834583 kombinacija: (2, 13, 18, 29, 30, 35, 36)
-count: 8 lex_1: 11022709 kombinacija: (6, 17, 21, 22, 23, 28, 35)
-count: 8 lex_1: 3250433 kombinacija: (2, 4, 7, 16, 17, 25, 29)
+count: 10 lex_1: 1764994 kombinacija: (1, x, 12, y, 18, z, 39)
+count: 9 lex_1: 1254492 kombinacija: (1, x, 9, y, 19, z, 28)
+count: 9 lex_1: 10621941 kombinacija: (6, x, 20, y, 30, z, 39)
+count: 9 lex_1: 248778 kombinacija: (1, x, 8, y, 15, z, 36)
+count: 8 lex_1: 6468686 kombinacija: (3, x, 12, y, 18, z, 34)
+count: 8 lex_1: 396671 kombinacija: (1, x, 16, y, 22, z, 32)
+count: 8 lex_1: 11410941 kombinacija: (7, x, 21, y, 25, z, 37)
+count: 8 lex_1: 4834583 kombinacija: (2, x, 18, y, 30, z, 36)
+count: 8 lex_1: 11022709 kombinacija: (6, x, 21, y, 23, z, 35)
+count: 8 lex_1: 3250433 kombinacija: (2, x, 7, y, 17, z, 29)
 """
 
 
@@ -207,7 +207,7 @@ nisu dokaz da će stvarno pasti, ali jesu rangirana preporuka modela/simulacije.
 
 
 Po modelu (mehanizam koji je proizveo dosadašnji duplikat) 
-predviđa sledeću next kombinaciju i daje rangiranu preporuku
+predviđa sledeću next kombinaciju i daje rangiranu preporuku. 
 
 Stopa za sledeći hit u istorijski skup je po 4625 jedinstvenih, 
 ne po 4626 redova, jer duplikat ne širi skup kandidata.
@@ -226,7 +226,7 @@ pokreće „vremeplov“ simulaciju za sledeći duplikat u istorijskom skupu
 
 
 Za pun test:
-RUNS=10000 python3 /Users/4c/Desktop/GHQ/data/vremeplov_duplikat_v2.py
+RUNS=10000 python3 /data/vremeplov_duplikat_v2.py
 
 
 v2 je Monte Carlo vremeplov: 
@@ -240,8 +240,8 @@ rng.sample(range(1, 40), 7) pravi jednu simuliranu kombinaciju
 
 
 """
-2262 ---> 12,632,941                     
-4047 ---> 12,632,941
+2262 ---> 12.632.941                     
+4047 ---> 12.632.941
 
 
 račun za očekivane duplikate:
@@ -300,8 +300,8 @@ Dakle ne 0.70 zaokruženo, nego 0.6955119184.
 Kod lex ranga je sve celobrojno i egzaktno, 
 pa shift od 1 = susedna kombinacija, ne ista. 
 Zato moram da zaključam konvenciju i držimo je svuda isto:
-0-based rang {8,16,19,23,29,31,37} = 12,632,940
-1-based = 12,632,941
+0-based rang {8,16,19,23,29,31,37} = 12.632.940
+1-based = 12.632.941
 
 rank/unrank, čistu celobrojna aritmetiku 
 (bez float zaokruživanja) i jednu fiksnu konvenciju 
@@ -316,15 +316,17 @@ predvideti sledeći duplikat preko simulacije (vremeplov), radeći u podskupu iz
 4626 izvlačenja, prostor C(39,7) = 15.380.937
 očekivani duplikati do sad: 0.6955119184; stopa po izvlačenju 0.0003007619
 sledeći duplikat = ponavljanje jedne od 4625 jedinstvenih izvučenih; 
-prosek ~3300 izvlačenja unapred
+prosek ~3325 izvlačenja unapred
 brisanje duplikata = df.duplicated() (k−1 po grupi)
 
 Koraci:
 Učitam 4626 → set jedinstvenih (proverim da ih je 4625).
 Lex rank/unrank (egzaktno, 1-based) — validacija unrank(rank(x))==x.
-Simulator „vremeplov“: nastavak izvlačenja dok ne padne već viđena → beleži korak i kombinaciju; N runova → raspodela waiting-time.
+Simulator „vremeplov“: 
+nastavak izvlačenja dok ne padne već viđena → 
+beleži korak i kombinaciju; N runova → raspodela waiting-time.
 
-rank(prva kombinacija) = 1, rank(poslednja) = 15,380,937
-unrank(1) = {1,2,3,4,5,6,7}, unrank(15,380,937) = {33,34,35,36,37,38,39}
+rank(prva kombinacija) = 1, rank(poslednja) = 15.380.937
+unrank(1) = {1,2,3,4,5,6,7}, unrank(15.380.937) = {33,34,35,36,37,38,39}
 garancija: unrank(rank(x)) == x
 """
